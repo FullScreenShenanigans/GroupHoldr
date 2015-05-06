@@ -2,9 +2,9 @@ interface IGroupHoldrSettings {
     // The listing of group names.
     groupNames: string[];
 
-    // The mapping of group types. This can be a string ("Array" or
+    // The mapping of group types. This can be a String ("Array" or
     // "Object") to set each one, or an Object mapping each groupName
-    // to a different one.
+    // to a different String.
     groupTypes: string | any;
 }
 
@@ -78,13 +78,10 @@ class GroupHoldr {
             throw new Error("No settings given to GroupHoldr.");
         }
         if (typeof settings.groupNames === "undefined") {
-            throw new Error("No groupNames Array provided to GroupHoldr.");
-        }
-        if (settings.groupNames.constructor !== Array) {
-            throw new Error("A GroupHoldr's groupNames must be an Array.");
+            throw new Error("No groupNames given to GroupHoldr.");
         }
         if (typeof settings.groupTypes === "undefined") {
-            throw new Error("No groupTypes provided to GroupHoldr.");
+            throw new Error("No groupTypes given to GroupHoldr.");
         }
 
         // These functions containers are filled in setGroupNames 
