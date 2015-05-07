@@ -50,9 +50,25 @@ describe("basic getting", function () {
 });
 
 describe("adding", function () {
-    it("adds values", function () {
+    it("adds to Arrays", function () {
         GroupHolder.addName("Josh");
         GroupHolder.functions.add.Name("Brandon");
         GroupHolder.getGroup("Name").push("Mariah");
+
+        chai.expect(GroupHolder.getNameGroup()).to.be.deep.equal([
+            "Josh", "Brandon", "Mariah"
+        ]);
+    });
+
+    it("adds to Objects", function () {
+        GroupHolder.addAge("Josh", 19);
+        GroupHolder.functions.add.Age("Brandon", 20);
+        GroupHolder.getGroup("Age").Mariah = 21;
+
+        chai.expect(GroupHolder.getGroups().Age).to.be.deep.equal({
+            "Josh": 19,
+            "Brandon": 20,
+            "Mariah": 21
+        });
     });
 });
