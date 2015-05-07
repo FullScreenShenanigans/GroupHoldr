@@ -91,7 +91,7 @@ class GroupHoldr {
             "set": {},
             "get": {},
             "add": {},
-            "del": {}
+            "delete": {}
         };
         this.setGroupNames(settings.groupNames, settings.groupTypes);
     }
@@ -394,7 +394,7 @@ class GroupHoldr {
             delete this["set" + name];
             delete this["get" + name];
             delete this["add" + name];
-            delete this["del" + name];
+            delete this["delete" + name];
 
             // Delete functions under .functions by making each type a new {}
             this.functions.setGroup = {};
@@ -402,7 +402,7 @@ class GroupHoldr {
             this.functions.set = {};
             this.functions.get = {};
             this.functions.add = {};
-            this.functions.del = {};
+            this.functions.delete = {};
         });
     }
 
@@ -432,7 +432,7 @@ class GroupHoldr {
             scope.createFunctionSet(name);
             scope.createFunctionGet(name);
             scope.createFunctionAdd(name);
-            scope.createFunctionDel(name);
+            scope.createFunctionDelete(name);
         });
     }
 
@@ -546,11 +546,11 @@ class GroupHoldr {
     }
 
     /**
-     * Creates a del (delete) function under this and functions.del.
+     * Creates a del (delete) function under this and functions.delete.
      * 
      * @param {String} name   The name of the group, from groupNames
      */
-    createFunctionDel(name: string): void {
+    createFunctionDelete(name: string): void {
         var group: any = this.groups[name];
 
         if (this.groupTypes[name] === Object) {
@@ -560,7 +560,7 @@ class GroupHoldr {
              * @param {String} key   The String key to reference the value to be
              *                       deleted.
              */
-            this.functions.del[name] = this["del" + name] = function (key: string): void {
+            this.functions.delete[name] = this["delete" + name] = function (key: string): void {
                 delete group[key];
             };
         } else {
@@ -570,8 +570,8 @@ class GroupHoldr {
              * @param {Number} key   The String key to reference the value to be
              *                       deleted.
              */
-            this.functions.del[name] = this["del" + name] = function (key: string): void {
-                group = group.splice(group.indexOf(key), 1);
+            this.functions.delete[name] = this["delete" + name] = function (key: string): void {
+                group.splice(group.indexOf(key), 1);
             };
         }
     }

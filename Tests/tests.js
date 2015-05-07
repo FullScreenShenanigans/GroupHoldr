@@ -72,3 +72,38 @@ describe("adding", function () {
         });
     });
 });
+
+describe("deletion", function () {
+    it("deletes from Arrays", function () {
+        GroupHolder.deleteName("Josh");
+        chai.expect(GroupHolder.getNameGroup()).to.be.deep.equal([
+            "Brandon", "Mariah"
+        ]);
+    });
+
+    it("deletes from Objects", function () {
+        GroupHolder.deleteAge("Josh");
+        chai.expect(GroupHolder.getAgeGroup()).to.be.deep.equal({
+            "Brandon": 20,
+            "Mariah": 21
+        });
+    });
+});
+
+describe("set", function () {
+    it("sets Arrays", function () {
+        GroupHolder.setNameGroup(["Josh"]);
+        chai.expect(GroupHolder.getNameGroup()).to.be.deep.equal([
+            "Josh"
+        ]);
+    });
+
+    it("sets Objects", function () {
+        GroupHolder.setAgeGroup({
+            "Josh": 19
+        });
+        chai.expect(GroupHolder.getAgeGroup()).to.be.deep.equal({
+            "Josh": 19
+        });
+    });
+});
