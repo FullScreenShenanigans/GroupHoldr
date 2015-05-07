@@ -1,7 +1,7 @@
-var groupNames = ["names", "ages"],
+var groupNames = ["Name", "Age"],
     groupTypes = {
-        "names": "Array",
-        "ages": "String"
+        "Name": "Array",
+        "Age": "Object"
     },
     GroupHolder;
 
@@ -33,5 +33,26 @@ describe("constructor", function () {
             "groupNames": groupNames,
             "groupTypes": groupTypes
         });
+    });
+});
+
+describe("basic getting", function () {
+    it("gets group names", function () {
+        chai.expect(GroupHolder.getGroupNames()).to.be.deep.equal([
+            "Name", "Age"
+        ]);
+    });
+    
+    it("gets groups", function () {
+        chai.expect(GroupHolder.getGroup("Name")).to.be.deep.equal([]);
+        chai.expect(GroupHolder.getGroup("Age")).to.be.deep.equal({});
+    });
+});
+
+describe("adding", function () {
+    it("adds values", function () {
+        GroupHolder.addName("Josh");
+        GroupHolder.functions.add.Name("Brandon");
+        GroupHolder.getGroup("Name").push("Mariah");
     });
 });

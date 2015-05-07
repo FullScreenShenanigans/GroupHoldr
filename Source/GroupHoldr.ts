@@ -48,24 +48,24 @@ interface IGroupHoldrSettings {
 class GroupHoldr {
     // Associative array of strings to groups, where groups are each some
     // sort of array (either typical or associative).
-    groups: any;
+    private groups: any;
 
     // Associative array containing "add", "del", "get", and "set" keys to
     // those appropriate functions (e.x. functions.add.MyGroup is the same
     // as this.addMyGroup).
-    functions: any;
+    private functions: any;
 
     // Array of string names, each of which is tied to a group.
-    groupNames: string[];
+    private groupNames: string[];
 
     // Associative array keying each group to the function it uses: Array
     // for regular arrays, and Object for associative arrays.
-    groupTypes: any;
+    private groupTypes: any;
 
     // Associative array keying each group to the string name of the
     // function it uses: "Array" for regular arrays, and "Object" for
     // associative arrays.
-    groupTypeNames: any;
+    private groupTypeNames: any;
 
     /**
      * Resets the GroupHoldr.
@@ -117,7 +117,7 @@ class GroupHoldr {
 
     /**
      * @param {String} name
-     * @return {Object} The group of the given name.
+     * @return {Mixed} The group of the given name.
      */
     getGroup(name: string): any {
         return this.groups[name];
@@ -182,7 +182,7 @@ class GroupHoldr {
      * Function.apply's standard.
      * 
      * @param {Mixed} scope   An optional scope to call this from (if falsy, 
-     *                        defaults to self).
+     *                        defaults to this).
      * @param {Function} func   A function to apply to each group.
      * @param {Array} [args]   An optional array of arguments to pass to the 
      *                         function after each group.
@@ -197,7 +197,7 @@ class GroupHoldr {
         }
 
         if (!scope) {
-            scope = self;
+            scope = this;
         }
 
         for (i = this.groupNames.length - 1; i >= 0; i -= 1) {
@@ -213,7 +213,7 @@ class GroupHoldr {
      * passed in an array after scope and func, as in Function.apply's standard.
      * 
      * @param {Mixed} scope   An optional scope to call this from (if falsy, 
-     *                        defaults to self).
+     *                        defaults to this).
      * @param {Function} func   A function to apply to each group.
      * @param {Array} [args]   An optional array of arguments to pass to the 
      *                         function after each group.
@@ -230,7 +230,7 @@ class GroupHoldr {
         }
 
         if (!scope) {
-            scope = self;
+            scope = this;
         }
 
         for (i = this.groupNames.length - 1; i >= 0; i -= 1) {
@@ -258,7 +258,7 @@ class GroupHoldr {
      * Function.call's standard.
      * 
      * @param {Mixed} [scope]   An optional scope to call this from (if falsy, 
-     *                          defaults to self).
+     *                          defaults to this).
      * @param {Function} func   A function to apply to each group.
      */
     callAll(scope: any, func: any): void {
@@ -266,7 +266,7 @@ class GroupHoldr {
             i: number;
 
         if (!scope) {
-            scope = self;
+            scope = this;
         }
 
         for (i = this.groupNames.length - 1; i >= 0; i -= 1) {
@@ -280,7 +280,7 @@ class GroupHoldr {
      * passed after scope and func natively, as in Function.call's standard.
      * 
      * @param {Mixed} [scope]   An optional scope to call this from (if falsy, 
-     *                          defaults to self).
+     *                          defaults to this).
      * @param {Function} func   A function to apply to each group member.
      */
     callOnAll(scope: any, func: any): void {
@@ -290,7 +290,7 @@ class GroupHoldr {
             j: any;
 
         if (!scope) {
-            scope = self;
+            scope = this;
         }
 
         for (i = this.groupNames.length - 1; i >= 0; i -= 1) {
@@ -357,15 +357,12 @@ class GroupHoldr {
         }
 
         // Reset the group types and type names, to be filled next
+        this.groupNames = names;
         this.groupTypes = {};
         this.groupTypeNames = {};
 
-        // Set the new groupNames, as ucFirst
-        this.groupNames = names.map(this.ucFirst);
-        this.groupNames.sort();
-
         // If groupTypes is an object, set custom group types for everything
-        if (types.constructor === String) {
+        if (types.constructor === Object) {
             this.groupNames.forEach(function (name: string): void {
                 scope.groupTypes[name] = scope.getTypeFunction(types[name]);
                 scope.groupTypeNames[name] = scope.getTypeName(types[name]);
@@ -392,12 +389,12 @@ class GroupHoldr {
     clearFunctions(): void {
         this.groupNames.forEach(function (name: string): void {
             // Delete member variable functions
-            delete self["set" + name + "Group"];
-            delete self["get" + name + "Group"];
-            delete self["set" + name];
-            delete self["get" + name];
-            delete self["add" + name];
-            delete self["del" + name];
+            delete this["set" + name + "Group"];
+            delete this["get" + name + "Group"];
+            delete this["set" + name];
+            delete this["get" + name];
+            delete this["add" + name];
+            delete this["del" + name];
 
             // Delete functions under .functions by making each type a new {}
             this.functions.setGroup = {};
@@ -444,7 +441,7 @@ class GroupHoldr {
     */
 
     /**
-     * Creates a getGroup function under self and functions.getGroup.
+     * Creates a getGroup function under this and functions.getGroup.
      * 
      * @param {String} name   The name of the group, from groupNames.
      */
@@ -461,7 +458,7 @@ class GroupHoldr {
     }
 
     /**
-     * Creates a setGroup function under self and functions.setGroup.
+     * Creates a setGroup function under this and functions.setGroup.
      * 
      * @param {String} name   The name of the group, from groupNames.
      */
@@ -480,7 +477,7 @@ class GroupHoldr {
     }
 
     /**
-     * Creates a set function under self and functions.set.
+     * Creates a set function under this and functions.set.
      * 
      * @param {String} name   The name of the group, from groupNames.
      */
@@ -499,7 +496,7 @@ class GroupHoldr {
     }
 
     /**
-     * Creates a get<type> function under self and functions.get
+     * Creates a get<type> function under this and functions.get
      * 
      * @param {String} name   The name of the group, from groupNames
      */
@@ -512,13 +509,13 @@ class GroupHoldr {
          *                      a String if the group is an Object.
          * @return {Mixed} value
          */
-        this.functions.get[<string>name] = self["get" + name] = function (key: string | number): void {
+        this.functions.get[<string>name] = this["get" + name] = function (key: string | number): void {
             return this.groups[name][<string>key];
         };
     }
 
     /**
-     * Creates an add function under self and functions.add.
+     * Creates an add function under this and functions.add.
      * 
      * @param {String} name   The name of the group, from groupNames
      */
@@ -533,7 +530,7 @@ class GroupHoldr {
              *                       added.
              * @param value
              */
-            this.functions.add[name] = self["add" + name] = function (key: string, value: any): void {
+            this.functions.add[name] = this["add" + name] = function (key: string, value: any): void {
                 group[key] = value;
             };
         } else {
@@ -542,14 +539,14 @@ class GroupHoldr {
              * 
              * @param {String} value
              */
-            this.functions.add[name] = self["add" + name] = function (value: any): void {
+            this.functions.add[name] = this["add" + name] = function (value: any): void {
                 group.push(value);
             };
         }
     }
 
     /**
-     * Creates a del (delete) function under self and functions.del.
+     * Creates a del (delete) function under this and functions.del.
      * 
      * @param {String} name   The name of the group, from groupNames
      */
@@ -563,7 +560,7 @@ class GroupHoldr {
              * @param {String} key   The String key to reference the value to be
              *                       deleted.
              */
-            this.functions.del[name] = self["del" + name] = function (key: string): void {
+            this.functions.del[name] = this["del" + name] = function (key: string): void {
                 delete group[key];
             };
         } else {
@@ -573,7 +570,7 @@ class GroupHoldr {
              * @param {Number} key   The String key to reference the value to be
              *                       deleted.
              */
-            this.functions.del[name] = self["del" + name] = function (key: string): void {
+            this.functions.del[name] = this["del" + name] = function (key: string): void {
                 group = group.splice(group.indexOf(key), 1);
             };
         }
@@ -611,15 +608,5 @@ class GroupHoldr {
             return Object;
         }
         return Array;
-    }
-
-    /**
-     * Uppercases the first character in a string.
-     * 
-     * @param {String} str
-     * @return {String}
-     */
-    ucFirst(str: string): string {
-        return str[0].toUpperCase() + str.slice(1);
     }
 }
